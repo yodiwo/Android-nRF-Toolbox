@@ -100,6 +100,13 @@ import no.nordicsemi.android.nrftoolbox.uart.wearable.UARTConfigurationSynchroni
 import no.nordicsemi.android.nrftoolbox.utility.FileHelper;
 import no.nordicsemi.android.nrftoolbox.widget.ClosableSpinner;
 
+
+
+//<-- Yodiwo-related settings -->
+//<-- ======================= -->
+import com.yodiwo.androidnode.PairingActivity;
+import com.yodiwo.androidnode.SettingsActivity;
+
 public class UARTActivity extends BleProfileServiceReadyActivity<UARTService.UARTBinder> implements UARTInterface,
 		UARTNewConfigurationDialogFragment.NewConfigurationDialogListener, UARTConfigurationsAdapter.ActionListener, AdapterView.OnItemSelectedListener,
 		GoogleApiClient.ConnectionCallbacks {
@@ -357,6 +364,11 @@ public class UARTActivity extends BleProfileServiceReadyActivity<UARTService.UAR
 	@Override
 	protected boolean onOptionsItemSelected(int itemId) {
 		final String name = mConfiguration.getName();
+
+		//<-- Yodiwo-related settings -->
+		//<-- ======================= -->
+		Intent yodiwo_intent = null;
+
 		switch (itemId) {
 			case R.id.action_configure:
 				setEditMode(!mEditMode);
@@ -420,7 +432,30 @@ public class UARTActivity extends BleProfileServiceReadyActivity<UARTService.UAR
 				snackbar.show();
 				return true;
 			}
+			//<-- Yodiwo-related settings -->
+			//<-- ======================= -->
+			case R.id.action_pair: {
+			//	final DialogFragment fragment = UARTNewConfigurationDialogFragment.getInstance(name, false);
+				yodiwo_intent = new Intent(this, PairingActivity.class);
+				try {
+					startActivity(yodiwo_intent);
+				} catch (final ActivityNotFoundException e) {
+					Toast.makeText(this, e.getMessage()/*R.string.no_uri_application*/, Toast.LENGTH_SHORT).show();
+				}
+				return true;
+			}
+			case R.id.action_settings: {
+				yodiwo_intent = new Intent(this, SettingsActivity.class);
+				try {
+					startActivity(yodiwo_intent);
+				} catch (final ActivityNotFoundException e) {
+					Toast.makeText(this, R.string.no_uri_application, Toast.LENGTH_SHORT).show();
+				}
+				return true;
+			}
 		}
+
+
 		return false;
 	}
 

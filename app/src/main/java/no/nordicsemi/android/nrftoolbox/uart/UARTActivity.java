@@ -52,6 +52,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.SlidingPaneLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -62,6 +63,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.yodiwo.androidnode.NodeService;
+import com.yodiwo.androidnode.SettingsProvider;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -126,6 +129,10 @@ public class UARTActivity extends BleProfileServiceReadyActivity<UARTService.UAR
 	private UARTService.UARTBinder mServiceBinder;
 	private ConfigurationListener mConfigurationListener;
 	private boolean mEditMode;
+
+	public static boolean isUnpairedByUser;
+	private static boolean ActivityInitialized;
+	private SettingsProvider settingsProvider = null;
 
 	public interface ConfigurationListener {
 		public void onConfigurationModified();
@@ -253,6 +260,18 @@ public class UARTActivity extends BleProfileServiceReadyActivity<UARTService.UAR
 		configurationSpinner.setOnItemSelectedListener(this);
 		configurationSpinner.setAdapter(mConfigurationsAdapter);
 		configurationSpinner.setSelection(mConfigurationsAdapter.getItemPosition(mPreferences.getLong(PREFS_CONFIGURATION, 0)));
+
+		ActivityInitialized = false;
+
+		if (settingsProvider == null)
+			settingsProvider = SettingsProvider.getInstance(this);
+
+		// Check if device is paired
+		if (settingsProvider.getNodeKey() != null && settingsProvider.getNodeSecretKey() != null) {
+			ActivityInitialized = true;
+			isUnpairedByUser = false;
+			NodeService.Startup(this);
+		}
 	}
 
 	@Override

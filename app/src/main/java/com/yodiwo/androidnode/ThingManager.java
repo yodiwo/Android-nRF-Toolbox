@@ -40,21 +40,9 @@ public class ThingManager {
     // =============================================================================================
     // Things names
 
-    public static final String HexiwearGyro = "HexiwearGyro";
-    public static final int HexiwearGyroPortX = 0;
-    public static final int HexiwearGyroPortY = 1;
-    public static final int HexiwearGyroPortZ = 2;
-
-    public static final String HexiwearAccel = "HexiwearAccel";
-    public static final int HexiwearAccelPortX = 0;
-    public static final int HexiwearAccelPortY = 1;
-    public static final int HexiwearAccelPortZ = 2;
-
-    public static final String HexiwearWeather = "HexiwearWeather";
-    public static final int HexiwearWeatherPortTemperature = 0;
-    public static final int HexiwearWeatherPortHumidity = 1;
-    public static final int HexiwearWeatherPortPressure = 2;
-
+    public static final String NordicUart = "NordicUart";
+    public static final int NordicUartPortRx = 0;
+    public static final int NordicUartPortTx = 1;
 
     // =============================================================================================
     // Things Initialization
@@ -80,59 +68,19 @@ public class ThingManager {
         NodeService.CleanThings(context);
 
         // ----------------------------------------------
-        // Gyro
+        // UART
 
-        thingKey = ThingKey.CreateKey(nodeKey, HexiwearGyro);
-        thing = new Thing(thingKey, HexiwearGyro, new ArrayList<ConfigParameter>(), new ArrayList<Port>(), "", "",
-                new ThingUIHints("/Content/VirtualGateway/img/icon-gyroscope.png", ""));
+        thingKey = ThingKey.CreateKey(nodeKey, NordicUart);
+        thing = new Thing(thingKey, NordicUart, new ArrayList<ConfigParameter>(), new ArrayList<Port>(), "", "",
+                new ThingUIHints("/Content/VirtualGateway/img/icon-uart.png", ""));
 
-        thing.Ports.add(new Port(PortKey.CreateKey(thingKey, Integer.toString(HexiwearGyroPortX)),
-                "X-axis (deg/s)", "",
-                ioPortDirection.Output, ePortType.Integer, "0", 0, ePortConf.None));
-        thing.Ports.add(new Port(PortKey.CreateKey(thingKey, Integer.toString(HexiwearGyroPortY)),
-                "Y-axis (deg/s)", "",
-                ioPortDirection.Output, ePortType.Integer, "0", 0, ePortConf.None));
-        thing.Ports.add(new Port(PortKey.CreateKey(thingKey, Integer.toString(HexiwearGyroPortZ)),
-                "Z-axis (deg/s)", "",
-                ioPortDirection.Output, ePortType.Integer, "0", 0, ePortConf.None));
+        thing.Ports.add(new Port(PortKey.CreateKey(thingKey, Integer.toString(NordicUartPortRx)),
+                "Rx", "",
+                ioPortDirection.Output, ePortType.String, "0", 0, ePortConf.None));
 
-        NodeService.AddThing(context, thing);
-
-        // ----------------------------------------------
-        // Accel
-
-        thingKey = ThingKey.CreateKey(nodeKey, HexiwearAccel);
-        thing = new Thing(thingKey, HexiwearAccel, new ArrayList<ConfigParameter>(), new ArrayList<Port>(), "", "",
-                new ThingUIHints("/Content/VirtualGateway/img/accelerometer.jpg", ""));
-
-        thing.Ports.add(new Port(PortKey.CreateKey(thingKey, Integer.toString(HexiwearAccelPortX)),
-                "X-axis (g)", "",
-                ioPortDirection.Output, ePortType.Decimal, "0", 0, ePortConf.None));
-        thing.Ports.add(new Port(PortKey.CreateKey(thingKey, Integer.toString(HexiwearAccelPortY)),
-                "Y-axis (g)", "",
-                ioPortDirection.Output, ePortType.Decimal, "0", 0, ePortConf.None));
-        thing.Ports.add(new Port(PortKey.CreateKey(thingKey, Integer.toString(HexiwearAccelPortZ)),
-                "Z-axis (g)", "",
-                ioPortDirection.Output, ePortType.Decimal, "0", 0, ePortConf.None));
-
-        NodeService.AddThing(context, thing);
-
-        // ----------------------------------------------
-        // Weather
-
-        thingKey = ThingKey.CreateKey(nodeKey, HexiwearWeather);
-        thing = new Thing(thingKey, HexiwearWeather, new ArrayList<ConfigParameter>(), new ArrayList<Port>(), "", "",
-                new ThingUIHints("/Content/Designer/img/BlockImages/icon-openweathermap.png", ""));
-
-        thing.Ports.add(new Port(PortKey.CreateKey(thingKey, Integer.toString(HexiwearWeatherPortTemperature)),
-                "Temperature (Celsius)", "",
-                ioPortDirection.Output, ePortType.Decimal, "0", 0, ePortConf.None));
-        thing.Ports.add(new Port(PortKey.CreateKey(thingKey, Integer.toString(HexiwearWeatherPortHumidity)),
-                "Humidity (%)", "",
-                ioPortDirection.Output, ePortType.Decimal, "0", 0, ePortConf.None));
-        thing.Ports.add(new Port(PortKey.CreateKey(thingKey, Integer.toString(HexiwearWeatherPortPressure)),
-                "Pressure (kPa)", "",
-                ioPortDirection.Output, ePortType.Decimal, "0", 0, ePortConf.None));
+        thing.Ports.add(new Port(PortKey.CreateKey(thingKey, Integer.toString(NordicUartPortTx)),
+                "Tx", "",
+                ioPortDirection.Input, ePortType.String, "0", 0, ePortConf.ReceiveAllEvents));
 
         NodeService.AddThing(context, thing);
     }

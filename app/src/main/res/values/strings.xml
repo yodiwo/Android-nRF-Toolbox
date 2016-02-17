@@ -78,7 +78,7 @@
 	<!-- UI Settings  -->
 	<string name="main_label">Android Node</string>
 	<string name="pref_device_name_key">device_name</string>
-	<string name="pref_device_name_default">hexiwear</string>
+	<string name="pref_device_name_default">Nordic nRf52</string>
 
 	<!-- Rest Settings  -->
 	<string name="pref_server_address_key">server_address</string>

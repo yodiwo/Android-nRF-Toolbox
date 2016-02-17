@@ -30,6 +30,12 @@
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="no.nordicsemi.android.LOG" />
 
+	<!-- Yodiwo-related settings -->
+	<!-- ======================= -->
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+
 	<uses-feature
 		android:name="android.hardware.bluetooth_le"
 		android:required="true" />
@@ -240,6 +246,44 @@
 		<provider android:name="no.nordicsemi.android.nrftoolbox.uart.UARTLocalLogContentProvider"
 			android:authorities="no.nordicsemi.android.nrftoolbox.uart.log"
 			android:exported="true"/>
+
+		<!-- Yodiwo-related settings -->
+		<!-- ======================= -->
+		<activity
+			android:name="com.yodiwo.androidnode.SettingsActivity"
+			android:label="@string/title_activity_settings"
+			android:parentActivityName="no.nordicsemi.android.nrftoolbox.uart.UARTActivity"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:screenOrientation="portrait" >
+		</activity>
+		<activity
+			android:name="com.yodiwo.androidnode.PairingActivity"
+			android:label="@string/title_activity_pairing"
+			android:parentActivityName="no.nordicsemi.android.nrftoolbox.uart.UARTActivity"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:screenOrientation="portrait" >
+		</activity>
+		<activity
+			android:name="com.yodiwo.androidnode.PairingWebActivity"
+			android:label="@string/title_activity_pairing_web"
+			android:parentActivityName="no.nordicsemi.android.nrftoolbox.uart.UARTActivity" >
+		</activity>
+
+		<service
+			android:name="com.yodiwo.androidnode.PairingService"
+			android:enabled="true"
+			android:exported="false" >
+		</service>
+		<service
+			android:name="com.yodiwo.androidnode.NodeService"
+			android:enabled="true"
+			android:exported="false" >
+		</service>
+		<service
+			android:name="org.eclipse.paho.android.service.MqttService" >
+		</service>
+
+
 	</application>
 
 </manifest>

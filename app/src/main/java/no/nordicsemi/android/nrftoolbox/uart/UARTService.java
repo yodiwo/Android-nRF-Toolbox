@@ -29,6 +29,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
@@ -343,11 +344,18 @@ public class UARTService extends BleProfileService implements UARTManagerCallbac
 	private BroadcastReceiver mYodiwoReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
-			//get received message
-			String message = intent.getStringExtra(EXTRA_UPDATED_STATE);
-			Log.i(TAG, "YodiwoReceiver:" + message);
-			mManager.send(message);
-		
+
+			Bundle b = intent.getExtras();
+			int portID = b.getInt(NodeService.EXTRA_UPDATED_PORT_ID, -1);
+			String thingKey = b.getString(NodeService.EXTRA_UPDATED_THING_KEY);
+			String thingName = b.getString(NodeService.EXTRA_UPDATED_THING_NAME);
+			String portState = b.getString(NodeService.EXTRA_UPDATED_STATE);
+			Boolean isEvent = b.getBoolean(NodeService.EXTRA_UPDATED_IS_EVENT);
+
+			if(thingName.equals(ThingManager.NordicUart)) {
+				Log.i(TAG, "YodiwoReceiver:" + portState);
+				mManager.send(portState);
+			}
 		}
 	};
 

@@ -40,6 +40,8 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+import com.yodiwo.androidnode.NodeService;
+import com.yodiwo.androidnode.ThingManager;
 
 import no.nordicsemi.android.log.ILogSession;
 import no.nordicsemi.android.log.Logger;
@@ -77,6 +79,10 @@ public class UARTService extends BleProfileService implements UARTManagerCallbac
 
 	private final LocalBinder mBinder = new UARTBinder();
 
+	//Yodiwo
+	public static final String EXTRA_UPDATED_STATE = "EXTRA_UPDATED_STATE";
+
+
 	public class UARTBinder extends LocalBinder implements UARTInterface {
 		@Override
 		public void send(final String text) {
@@ -105,6 +111,9 @@ public class UARTService extends BleProfileService implements UARTManagerCallbac
 
 		registerReceiver(mDisconnectActionBroadcastReceiver, new IntentFilter(ACTION_DISCONNECT));
 		registerReceiver(mIntentBroadcastReceiver, new IntentFilter(ACTION_SEND));
+
+		//Yodiwo
+		registerReceiver(mYodiwoReceiver, new IntentFilter("NodeService.BROADCAST_THING_UPDATE"));
 
 		mGoogleApiClient = new GoogleApiClient.Builder(this)
 				.addApi(Wearable.API)
@@ -174,6 +183,9 @@ public class UARTService extends BleProfileService implements UARTManagerCallbac
 	@Override
 	public void onDataReceived(final String data) {
 		Logger.a(getLogSession(), "\"" + data + "\" received");
+
+		// Send port event to Yodiwo Cloud
+		NodeService.SendPortMsg(this, ThingManager.NordicUart, ThingManager.NordicUartPortRx, data, 0);
 
 		final Intent broadcast = new Intent(BROADCAST_UART_RX);
 		broadcast.putExtra(EXTRA_DATA, data);
@@ -325,4 +337,21 @@ public class UARTService extends BleProfileService implements UARTManagerCallbac
 				Logger.i(getLogSession(), "[Broadcast] " + ACTION_SEND + " broadcast received incompatible data type. Only String and int are supported.");
 		}
 	};
+
+
+//Yodiwo
+	private BroadcastReceiver mYodiwoReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(final Context context, final Intent intent) {
+			//get received message
+			String message = intent.getStringExtra(EXTRA_UPDATED_STATE);
+			Log.i(TAG, "YodiwoReceiver:" + message);
+			mManager.send(message);
+		
+		}
+	};
+
+
 }
+
+

@@ -82,6 +82,7 @@ public class UARTService extends BleProfileService implements UARTManagerCallbac
 
 	//Yodiwo
 	public static final String EXTRA_UPDATED_STATE = "EXTRA_UPDATED_STATE";
+	public static final String EXTRA_UPDATED_THING_NAME = "EXTRA_UPDATED_THING_NAME";
 
 
 	public class UARTBinder extends LocalBinder implements UARTInterface {
@@ -353,8 +354,22 @@ public class UARTService extends BleProfileService implements UARTManagerCallbac
 			Boolean isEvent = b.getBoolean(NodeService.EXTRA_UPDATED_IS_EVENT);
 
 			if(thingName.equals(ThingManager.NordicUart)) {
-				Log.i(TAG, "YodiwoReceiver:" + portState);
-				mManager.send(portState);
+				Log.i(TAG, "YodiwoReceiverUART:" + portState);
+				//mManager.send(portState);
+				StringBuilder builder = new StringBuilder(portState);
+				builder.insert(0,"(("); //Bad protocol. Assume that this is from cloud to uart
+				String result = builder.toString();
+				mManager.send(result);
+			}
+			else if(thingName.equals(ThingManager.NordicNfc)) {
+				Log.i(TAG, "YodiwoReceiverNFC:" + portState);
+//				mManager.send(portState);
+//				mManager.send("www.in.gr");
+				StringBuilder builder = new StringBuilder(portState);
+				builder.insert(0,"))");//Bad protocol. Assume that this is from cloud to nfc
+				String result = builder.toString();
+				mManager.send(result);
+
 			}
 		}
 	};

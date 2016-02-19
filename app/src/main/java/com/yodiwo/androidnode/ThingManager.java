@@ -44,6 +44,8 @@ public class ThingManager {
     public static final int NordicUartPortRx = 0;
     public static final int NordicUartPortTx = 1;
 
+    public static final String NordicNfc = "NordicNfc";
+    public static final int    NordicNfcPortTx = 0;
     // =============================================================================================
     // Things Initialization
 
@@ -63,7 +65,8 @@ public class ThingManager {
         String nodeKey = settingsProvider.getNodeKey();
         String thingKey = "";
         Thing thing = null;
-
+        String thingNfcKey = "";
+        Thing thingNfc = null;
         // Clean old local things
         NodeService.CleanThings(context);
 
@@ -72,7 +75,7 @@ public class ThingManager {
 
         thingKey = ThingKey.CreateKey(nodeKey, NordicUart);
         thing = new Thing(thingKey, NordicUart, new ArrayList<ConfigParameter>(), new ArrayList<Port>(), "", "",
-                new ThingUIHints("/Content/VirtualGateway/img/icon-uart.png", ""));
+                new ThingUIHints("/Content/Designer/img/BlockImages/icon-uart.png", ""));
 
         thing.Ports.add(new Port(PortKey.CreateKey(thingKey, Integer.toString(NordicUartPortRx)),
                 "Rx", "",
@@ -83,6 +86,17 @@ public class ThingManager {
                 ioPortDirection.Input, ePortType.String, "0", 0, ePortConf.ReceiveAllEvents));
 
         NodeService.AddThing(context, thing);
+        // NFC
+
+        thingNfcKey = ThingKey.CreateKey(nodeKey, NordicNfc);
+        thingNfc = new Thing(thingNfcKey, NordicNfc, new ArrayList<ConfigParameter>(), new ArrayList<Port>(), "", "",
+                new ThingUIHints("/Content/Designer/img/BlockImages/icon-nfc.png", ""));
+
+        thingNfc.Ports.add(new Port(PortKey.CreateKey(thingNfcKey, Integer.toString(NordicNfcPortTx)),
+                "Tx", "",
+                ioPortDirection.Input, ePortType.String, "0", 0, ePortConf.ReceiveAllEvents));
+
+        NodeService.AddThing(context, thingNfc);
     }
 
     // ---------------------------------------------------------------------------------------------

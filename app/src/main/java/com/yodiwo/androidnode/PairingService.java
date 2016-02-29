@@ -3,8 +3,12 @@ package com.yodiwo.androidnode;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+import android.webkit.ValueCallback;
 
 import com.yodiwo.plegma.ApiRestAccess;
 import com.yodiwo.plegma.PairingNodeGetKeysRequest;
@@ -183,6 +187,19 @@ public class PairingService extends IntentService {
         SettingsProvider settingsProvider = SettingsProvider.getInstance(context);
         settingsProvider.setNodeKeys(null, null);
         settingsProvider.setNodeTokens(null, null);
+
+        // Remove cookies
+        android.webkit.CookieManager cookieManager = CookieManager.getInstance();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            cookieManager.removeAllCookies(new ValueCallback<Boolean>() {
+                @Override
+                public void onReceiveValue(Boolean aBoolean) {}
+            });
+        }
+        else {
+            CookieSyncManager.createInstance(context);
+            cookieManager.removeAllCookie();
+        }
     }
 
     // =============================================================================================
